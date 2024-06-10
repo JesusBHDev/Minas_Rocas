@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clasificador de Frecuencias</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            margin-top: 200px;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="submit"], button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: #2196F3;
+        }
+
+        input[type="submit"]:hover, button:hover {
+            background-color: #45a049;
+        }
+
+        button:hover {
+            background-color: #1e88e5;
+        }
+
+        p#resultado {
+            margin-top: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function clasificarFrecuencias(event) {
+            event.preventDefault();
+            const freq_11 = document.getElementById('freq_11').value;
+            const freq_24 = document.getElementById('freq_24').value;
+            const freq_31 = document.getElementById('freq_31').value;
+            const freq_32 = document.getElementById('freq_32').value;
+            const freq_36 = document.getElementById('freq_36').value;
+            const freq_40 = document.getElementById('freq_40').value;
+            const freq_43 = document.getElementById('freq_43').value;
+            const freq_45 = document.getElementById('freq_45').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `freq_11=${freq_11}&freq_24=${freq_24}&freq_31=${freq_31}&freq_32=${freq_32}&freq_36=${freq_36}&freq_40=${freq_40}&freq_43=${freq_43}&freq_45=${freq_45}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('resultado').innerText = 'Error: ' + data.error;
+                } else {
+                    document.getElementById('resultado').innerText = 'La categoría es: ' + data.categoria;
+                }
+            })
+            .catch(error => {
+                document.getElementById('resultado').innerText = 'Error en la solicitud.';
+                console.error('Error:', error);
+            });
+        }
+
+        function rellenarCamposRoca() {
+            document.getElementById('freq_11').value = -0.167737;
+            document.getElementById('freq_24').value = 1.385314;
+            document.getElementById('freq_31').value = -0.371200;
+            document.getElementById('freq_32').value = -1.327516;
+            document.getElementById('freq_36').value = 1.266420;
+            document.getElementById('freq_40').value = -0.215562;
+            document.getElementById('freq_43').value = -0.043586;
+            document.getElementById('freq_45').value = 0.251438;
+        }
+
+        function rellenarCamposMina() {
+            document.getElementById('freq_11').value = 0.586559;
+            document.getElementById('freq_24').value = 0.699664;
+            document.getElementById('freq_31').value = 0.482225;
+            document.getElementById('freq_32').value = 0.563886;
+            document.getElementById('freq_36').value = -1.258450;
+            document.getElementById('freq_40').value = -1.071581;
+            document.getElementById('freq_43').value = -0.368195;
+            document.getElementById('freq_45').value = -0.685947;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Clasificador de Rocas y Minas</h1>
+        <h4>Jesus Ivan Bautista Hernandez 9 B </h4>
+        <form id="formulario" onsubmit="clasificarFrecuencias(event)">
+            <label for="freq_11">Frecuencia 11:</label>
+            <input type="text" id="freq_11" name="freq_11"><br><br>
+            <label for="freq_24">Frecuencia 24:</label>
+            <input type="text" id="freq_24" name="freq_24"><br><br>
+            <label for="freq_31">Frecuencia 31:</label>
+            <input type="text" id="freq_31" name="freq_31"><br><br>
+            <label for="freq_32">Frecuencia 32:</label>
+            <input type="text" id="freq_32" name="freq_32"><br><br>
+            <label for="freq_36">Frecuencia 36:</label>
+            <input type="text" id="freq_36" name="freq_36"><br><br>
+            <label for="freq_40">Frecuencia 40:</label>
+            <input type="text" id="freq_40" name="freq_40"><br><br>
+            <label for="freq_43">Frecuencia 43:</label>
+            <input type="text" id="freq_43" name="freq_43"><br><br>
+            <label for="freq_45">Frecuencia 45:</label>
+            <input type="text" id="freq_45" name="freq_45"><br><br>
+            <input type="submit" value="Enviar">
+        </form>
+        <button onclick="rellenarCamposRoca()">Roca</button>
+        <button onclick="rellenarCamposMina()">Mina</button>
+        <p id="resultado"></p>
+    </div>
+</body>
+</html>
